@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.0",
     "@heroicons/react": "^2.0.18",
+    "animate.css": "^4.1.1",
     "autoprefixer": "10.4.15",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.15",
