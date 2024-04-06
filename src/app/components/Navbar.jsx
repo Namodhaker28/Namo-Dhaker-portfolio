@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavLink from "./NavLink";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import MenuOverlay from "./MenuOverlay";
@@ -28,17 +28,44 @@ const navLinks = [
 
 const Navbar = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navListRef = useRef(null);
 
-  useGSAP(() => {
-    gsap.from("li", {opacity: 0, stagger: 0.5});
-    gsap.to("li", {rotate: 360}); // <-- automatically reverted
+  useGSAP(
+    () => {
+      gsap.from("li", { opacity: 0, stagger: 0.5 });
+      gsap.to("li", { rotate: 360 }); // <-- automatically reverted
+    },
+    { scope: navListRef, revertOnUpdate: false }
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 50;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    // Attach the event listener
+    window.addEventListener("scroll", handleScroll);
+
+    // Remove the event listener on cleanup
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrolled]);
 
 
-  }, {  scope: navListRef, revertOnUpdate: false});
 
   return (
-    <nav className="fixed mx-auto border border-none  top-0 left-0 right-0 z-10  bg-opacity-100">
+    <nav
+      style={{
+        background: scrolled
+          ? "linear-gradient(135deg, rgba(17,13,88,1) 0%, rgba(107,9,121,1) 35%, rgba(128,33,129,1) 66%, rgba(1,108,122,1) 100%)"
+          : "",
+      }}
+      className="fixed mx-auto border border-none  top-0 left-0 right-0 z-10  bg-opacity-100 ">
       <div className="flex container lg:py-4 flex-wrap items-center justify-between mx-auto px-4 py-2">
         <Link href={"/"} className="text-2xl md:text-5xl text-white font-semibold">
           ₪äɱ৹

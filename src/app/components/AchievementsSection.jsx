@@ -103,31 +103,31 @@ export const TECHNOLOGIES = [
   },
 ];
 
-
 const AchievementsSection = () => {
-  const imageRef = useRef()
+  const imageRef = useRef();
   useGSAP(() => {
-    gsap.from(".imagegsap", {opacity: 0, stagger: 0.25});
+    gsap.from(".imagegsap", { opacity: 0, stagger: 0.25 });
     gsap.to(".imagegsap", {
       rotation: 360,
-      delay:3
+      delay: 3,
     }); // <-- automatically reverted
-  },);
+  });
+
   return (
     <div className="py-8 px-4 xl:gap-16 ">
-      <div className=" rounded-md py-8  flex flex-col sm:flex-row items-center justify-between">
+      <div className=" rounded-md py-8 gap-2  flex flex-wrap flex-row sm:flex-row items-center justify-between">
         {TECHNOLOGIES.map(({ url, logo, darkModeLogo, label }, index) => {
           return (
-            <div  key={index} className=" imagegsap flex flex-col items-center gap-2">
+            <div key={index} className=" w-16 imagegsap flex flex-col items-center gap-2">
               <Link noCustomization href={url} externalLink>
                 <Image
                   src={darkModeLogo || logo}
                   alt={label}
                   ref={imageRef}
-                  className={` transition-transform duration-300 md:hover:scale-120`}
+                  className={` w-1/2 sm:w-full mx-auto transition-transform duration-300 md:hover:scale-120`}
                 />
               </Link>
-              <h5 className="text-white">{label}</h5>
+              <h5 className="text-white text-xs">{label}</h5>
             </div>
             // <div
             //   key={index}

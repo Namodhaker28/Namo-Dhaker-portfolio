@@ -6,58 +6,59 @@ import { motion, useInView } from "framer-motion";
 
 const projectsData = [
   {
-    id: 1,
-    title: "React Portfolio Website",
-    description: "Project 1 description",
-    image: "/images/projects/1.png",
-    tag: ["All", "Web"],
-    gitUrl: "/",
-    previewUrl: "/",
-  },
-  {
     id: 2,
-    title: "Potography Portfolio Website",
-    description: "Project 2 description",
+    title: "Chat App",
+    description:
+      "The chat app for those who love to talk, type, and take conversations to the next level ",
     image: "/images/projects/2.png",
     tag: ["All", "Web"],
-    gitUrl: "/",
-    previewUrl: "/",
+    gitUrlClient: "https://github.com/Namodhaker28/chat-app-frontend/tree/master",
+    gitUrlServer: "https://github.com/Namodhaker28/chat-app-backend/tree/master",
+    previewUrl: "https://verdant-mandazi-e70ad1.netlify.app/",
   },
   {
     id: 3,
-    title: "E-commerce Application",
-    description: "Project 3 description",
+    title: "Sneaker Store",
+    description:
+      "Discover your perfect stride with our vast collection of shoes, where style meets comfort in every click.",
     image: "/images/projects/3.png",
     tag: ["All", "Web"],
-    gitUrl: "/",
+    gitUrlClient: "https://github.com/Namodhaker28/404shoe-frontend/tree/dev",
+    gitUrlServer: "https://github.com/Namodhaker28/404shoe-backend/tree/dev",
     previewUrl: "https://lovely-quokka-068f3c.netlify.app",
   },
   {
     id: 4,
-    title: "Food Ordering Application",
-    description: "Project 4 description",
+    title: "To-do App",
+    description:
+      "Unleash the power of productivity: conquer chaos and claim victory over your tasks with our heroic to-do app.",
     image: "/images/projects/4.png",
     tag: ["All", "Mobile"],
-    gitUrl: "/",
-    previewUrl: "/",
+    gitUrlClient: "https://github.com/Namodhaker28/ToDo-List/tree/todoList-with-backend",
+    gitUrlServer: "https://github.com/Namodhaker28/todo-backend/tree/master",
+    previewUrl: "https://celadon-chimera-001229.netlify.app/",
   },
   {
     id: 5,
-    title: "React Firebase Template",
-    description: "Authentication and CRUD operations",
+    title: "Weather App",
+    description:
+      "Navigate the whims of the weather with precision, all in one swipe—your daily forecast, redefined.",
     image: "/images/projects/5.png",
     tag: ["All", "Web"],
-    gitUrl: "/",
-    previewUrl: "/",
+    gitUrlClient: "https://github.com/Namodhaker28/weather-app",
+    gitUrlServer: "",
+    previewUrl: "https://dulcet-maamoul-6aad65.netlify.app/",
   },
   {
     id: 6,
-    title: "Full-stack Roadmap",
-    description: "Project 5 description",
+    title: "MorseEmoji Code genertion",
+    description:
+      "Transform text into a playful MorseEmoji code, where dots and dashes are replaced with fun emojis, adding a whimsical twist to classic communication.",
     image: "/images/projects/6.png",
     tag: ["All", "Web"],
-    gitUrl: "/",
-    previewUrl: "/",
+    gitUrlClient: "https://github.com/Namodhaker28/morsemoji",
+    gitUrlServer: "",
+    previewUrl: "https://scintillating-scone-138b72.netlify.app/",
   },
 ];
 
@@ -70,9 +71,7 @@ const ProjectsSection = () => {
     setTag(newTag);
   };
 
-  const filteredProjects = projectsData.filter((project) =>
-    project.tag.includes(tag)
-  );
+  const filteredProjects = projectsData.filter((project) => project.tag.includes(tag));
 
   const cardVariants = {
     initial: { y: 50, opacity: 0 },
@@ -81,9 +80,7 @@ const ProjectsSection = () => {
 
   return (
     <section id="projects">
-      <h2 className="text-center text-4xl font-bold text-white mt-4 mb-8 md:mb-12">
-        My Projects
-      </h2>
+      <h2 className="text-center text-4xl font-bold text-white mt-4 mb-8 md:mb-12">My Projects</h2>
       {/* <div className="text-white flex flex-row justify-center items-center gap-2 py-6">
         <ProjectTag
           onClick={handleTagChange}
@@ -108,14 +105,14 @@ const ProjectsSection = () => {
             variants={cardVariants}
             initial="initial"
             animate={isInView ? "animate" : "initial"}
-            transition={{ duration: 0.3, delay: index * 0.4 }}
-          >
+            transition={{ duration: 0.3, delay: index * 0.4 }}>
             <ProjectCard
               key={project.id}
               title={project.title}
               description={project.description}
               imgUrl={project.image}
-              gitUrl={project.gitUrl}
+              gitUrlClient={project.gitUrlClient}
+              gitUrlServer={project.gitUrlServer}
               previewUrl={project.previewUrl}
             />
           </motion.li>
