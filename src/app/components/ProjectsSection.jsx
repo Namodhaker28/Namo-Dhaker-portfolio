@@ -10,7 +10,7 @@ const projectsData = [
     title: "Chat App",
     description:
       "The chat app for those who love to talk, type, and take conversations to the next level ",
-    image: "/images/projects/2.png",
+    image: "/images/projects/chatapp.png",
     tag: ["All", "Web"],
     gitUrlClient: "https://github.com/Namodhaker28/chat-app-frontend/tree/master",
     gitUrlServer: "https://github.com/Namodhaker28/chat-app-backend/tree/master",
@@ -21,7 +21,7 @@ const projectsData = [
     title: "Sneaker Store",
     description:
       "Discover your perfect stride with our vast collection of shoes, where style meets comfort in every click.",
-    image: "/images/projects/3.png",
+    image: "/images/projects/ecommerce.png",
     tag: ["All", "Web"],
     gitUrlClient: "https://github.com/Namodhaker28/404shoe-frontend/tree/dev",
     gitUrlServer: "https://github.com/Namodhaker28/404shoe-backend/tree/dev",
@@ -32,7 +32,7 @@ const projectsData = [
     title: "To-do App",
     description:
       "Unleash the power of productivity: conquer chaos and claim victory over your tasks with our heroic to-do app.",
-    image: "/images/projects/4.png",
+    image: "/images/projects/todoapp.png",
     tag: ["All", "Mobile"],
     gitUrlClient: "https://github.com/Namodhaker28/ToDo-List/tree/todoList-with-backend",
     gitUrlServer: "https://github.com/Namodhaker28/todo-backend/tree/master",
@@ -54,7 +54,7 @@ const projectsData = [
     title: "MorseEmoji Code genertion",
     description:
       "Transform text into a playful MorseEmoji code, where dots and dashes are replaced with fun emojis, adding a whimsical twist to classic communication.",
-    image: "/images/projects/6.png",
+    image: "/images/projects/moseremoji.png",
     tag: ["All", "Web"],
     gitUrlClient: "https://github.com/Namodhaker28/morsemoji",
     gitUrlServer: "",
