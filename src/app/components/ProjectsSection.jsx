@@ -32,7 +32,7 @@ const projectsData = [
     title: "To-do App",
     description:
       "Unleash the power of productivity: conquer chaos and claim victory over your tasks with our heroic to-do app.",
-    image: "/images/projects/todoapp.png",
+    image: "/images/projects/todoapp.PNG",
     tag: ["All", "Mobile"],
     gitUrlClient: "https://github.com/Namodhaker28/ToDo-List/tree/todoList-with-backend",
     gitUrlServer: "https://github.com/Namodhaker28/todo-backend/tree/master",
