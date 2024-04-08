@@ -43,7 +43,7 @@ const projectsData = [
     title: "Weather App",
     description:
       "Navigate the whims of the weather with precision, all in one swipe—your daily forecast, redefined.",
-    image: "/images/projects/5.png",
+    image: "/images/projects/weather.jpeg",
     tag: ["All", "Web"],
     gitUrlClient: "https://github.com/Namodhaker28/weather-app",
     gitUrlServer: "",
