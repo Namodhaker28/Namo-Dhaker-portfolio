@@ -13,16 +13,8 @@ gsap.registerPlugin(useGSAP);
 
 const navLinks = [
   {
-    title: "About",
-    path: "#about",
-  },
-  {
-    title: "Projects",
-    path: "#projects",
-  },
-  {
-    title: "Contact",
-    path: "#contact",
+    title: "Blogs",
+    path: "/blogs",
   },
 ];
 
@@ -56,13 +48,11 @@ const Navbar = () => {
     };
   }, [scrolled]);
 
-
-
   return (
     <nav
       style={{
         background: scrolled
-          ? "linear-gradient(135deg, rgba(17,13,88,1) 0%, rgba(107,9,121,1) 35%, rgba(128,33,129,1) 66%, rgba(1,108,122,1) 100%)"
+          ? "linear-gradient(133deg, rgba(0,0,0,1) 0%, rgba(0,1,46,1) 35%, rgba(0,6,50,1) 61%, rgba(20,0,45,1) 90%)"
           : "",
       }}
       className="fixed mx-auto border border-none  top-0 left-0 right-0 z-10  bg-opacity-100 ">
@@ -86,44 +76,19 @@ const Navbar = () => {
             </button>
           )}
         </div>
+
+        <div>
+          <ul ref={navListRef} className="flex p-4 md:p-0 md:flex-row md:space-x-8 mt-0">
+            {navLinks.map((link) => (
+              <li className="box">
+                <Link className="text-white" href={link.path}>{link.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="menu hidden md:block md:w-auto" id="navbar">
           <ul ref={navListRef} className="flex p-4 md:p-0 md:flex-row md:space-x-8 mt-0">
-            {/* {navLinks.map((link, index) => ( */}
-            {/* <li>
-              <lottie-player
-                src="/lottie/github.json"
-                background="transparent"
-                speed="1"
-                style={{width: "50px", height: "50px"}}
-                direction="1"
-                mode="normal"
-                autoplay
-                hover></lottie-player>
-            </li>
-            <li>
-              <lottie-player
-                src="/lottie/linkedin.json"
-                background="transparent"
-                speed="1"
-                style={{width: "70px", height: "70px"}}
-                direction="1"
-                mode="normal"
-                autoplay
-                // hover
-                ></lottie-player>
-            </li>
-            <li>
-              <lottie-player
-                src="/lottie/instagram.json"
-                background="transparent"
-                speed="1"
-                style={{width: "70px", height: "70px"}}
-                direction="1"
-                mode="normal"
-                autoplay
-                // hover
-                ></lottie-player>
-            </li> */}
             <li className="box">
               <Image
                 width="50"
@@ -148,7 +113,6 @@ const Navbar = () => {
                 alt="instagram-new"
               />
             </li>
-            {/* ))} */}
           </ul>
         </div>
       </div>

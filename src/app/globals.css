@@ -4,10 +4,11 @@
 
 body {
 
-  background: linear-gradient(16deg, #541c0a, #5c0e2c, #073a4d, #075241);
-  background-size: 1000% 1000%;
-  animation: gradient 5s ease infinite;
-  height: 100vh;
+  background: rgb(0,0,0);
+  background: linear-gradient(133deg, rgba(0,0,0,1) 0%, rgba(0,1,46,1) 35%, rgba(0,6,50,1) 61%, rgba(20,0,45,1) 90%);
+  background-size: 500% 500%;
+  animation: gradient 10s ease infinite;
+  height: max-content;
 }
 
 @keyframes gradient {
