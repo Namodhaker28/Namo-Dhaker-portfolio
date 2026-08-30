@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import SectionLabel from "./SectionLabel";
 import SwapText from "./SwapText";
-import { INTRO_REVEAL_AT } from "./IntroLoader";
 
 gsap.registerPlugin(useGSAP);
 
@@ -23,9 +22,8 @@ const HeroSection = () => {
 
   useGSAP(
     () => {
-      // Waits for the intro loader to start revealing the site
-      gsap
-        .timeline({ delay: INTRO_REVEAL_AT, defaults: { ease: "power4.out" } })
+      const tl = gsap
+        .timeline({ paused: true, defaults: { ease: "power4.out" } })
         .from("[data-hero-line]", {
           yPercent: 110,
           duration: 1.1,
@@ -36,6 +34,15 @@ const HeroSection = () => {
           { opacity: 0, y: 20, duration: 0.8, stagger: 0.1, ease: "power3.out" },
           "-=0.6"
         );
+
+      // If the intro loader is running, start when it begins revealing the
+      // site (mid-zoom). Otherwise play immediately.
+      if (window.__introActive) {
+        const start = () => tl.play();
+        window.addEventListener("intro:reveal", start, { once: true });
+        return () => window.removeEventListener("intro:reveal", start);
+      }
+      tl.play();
     },
     { scope }
   );

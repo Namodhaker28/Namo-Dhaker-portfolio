@@ -71,6 +71,31 @@ body {
   }
 }
 
+/* Intro loader: the name rises in via pure CSS so it appears immediately
+   on first paint, before the JS bundle has loaded. GSAP takes over for
+   the later phases. */
+@keyframes intro-name-in {
+  from {
+    transform: translateY(120%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.intro-name {
+  transform: translateY(120%);
+  animation: intro-name-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.intro-name-first {
+  animation-delay: 0.15s;
+}
+
+.intro-name-last {
+  animation-delay: 0.25s;
+}
+
 /* Text-swap hover (used with the SwapText component).
    The duplicate label sits absolutely below the visible one, so the mask
    is only ever one line tall; hovering slides the pair up one line. */
