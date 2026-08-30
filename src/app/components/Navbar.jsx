@@ -1,123 +1,70 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import NavLink from "./NavLink";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import MenuOverlay from "./MenuOverlay";
-import Image from "next/image";
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useState } from "react";
+import SwapText from "./SwapText";
 
-gsap.registerPlugin(useGSAP);
-
-const navLinks = [
-  {
-    title: "Blogs",
-    path: "/blogs",
-  },
+const NAV_LINKS = [
+  { title: "Work", hash: "#work" },
+  { title: "About", hash: "#about" },
+  { title: "Contact", hash: "#contact" },
 ];
 
 const Navbar = () => {
-  const [navbarOpen, setNavbarOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const navListRef = useRef(null);
-
-  useGSAP(
-    () => {
-      gsap.from("li", { opacity: 0, stagger: 0.5 });
-      gsap.to("li", { rotate: 360 }); // <-- automatically reverted
-    },
-    { scope: navListRef, revertOnUpdate: false }
-  );
 
   useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 50;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    // Attach the event listener
-    window.addEventListener("scroll", handleScroll);
-
-    // Remove the event listener on cleanup
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [scrolled]);
+  const scrollTo = (e, hash) => {
+    e.preventDefault();
+    if (window.lenis) {
+      window.lenis.scrollTo(hash, { offset: 0, duration: 1.4 });
+    } else {
+      document.querySelector(hash)?.scrollIntoView();
+    }
+  };
 
   return (
-    <nav
-      style={{
-        background: scrolled
-          ? "linear-gradient(133deg, rgba(0,0,0,1) 0%, rgba(0,1,46,1) 35%, rgba(0,6,50,1) 61%, rgba(20,0,45,1) 90%)"
-          : "",
-      }}
-      className="fixed mx-auto border border-none  top-0 left-0 right-0 z-10  bg-opacity-100 ">
-      <div className="flex container lg:py-4 flex-wrap items-center justify-between mx-auto px-4 py-2">
-        <Link href={"/"} className="text-2xl md:text-5xl text-white font-semibold">
-          ₪äɱ৹
-          {/* ₦äɱ৹  */}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
+        scrolled
+          ? "border-line bg-ink/80 backdrop-blur-md"
+          : "border-transparent bg-transparent"
+      }`}>
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link
+          href="/"
+          className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-fg">
+          Namo Dhaker
         </Link>
-        <div className="mobile-menu block md:hidden">
-          {!navbarOpen ? (
-            <button
-              onClick={() => setNavbarOpen(true)}
-              className="flex items-center px-3 py-2 border rounded border-slate-200 text-slate-200 hover:text-white hover:border-white">
-              <Bars3Icon className="h-5 w-5" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setNavbarOpen(false)}
-              className="flex items-center px-3 py-2 border rounded border-slate-200 text-slate-200 hover:text-white hover:border-white">
-              <XMarkIcon className="h-5 w-5" />
-            </button>
-          )}
-        </div>
 
-        <div>
-          <ul ref={navListRef} className="flex p-4 md:p-0 md:flex-row md:space-x-8 mt-0">
-            {navLinks.map((link) => (
-              <li className="box">
-                <Link className="text-white" href={link.path}>{link.title}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="menu hidden md:block md:w-auto" id="navbar">
-          <ul ref={navListRef} className="flex p-4 md:p-0 md:flex-row md:space-x-8 mt-0">
-            <li className="box">
-              <Image
-                width="50"
-                height="50"
-                src="https://img.icons8.com/3d-fluency/50/github.png"
-                alt="github"
-              />
+        <ul className="flex items-center gap-6 sm:gap-8">
+          {NAV_LINKS.map((link) => (
+            <li key={link.hash}>
+              <a
+                href={link.hash}
+                onClick={(e) => scrollTo(e, link.hash)}
+                className="swap-parent text-xs uppercase tracking-[0.15em] text-muted transition-colors duration-300 hover:text-fg">
+                <SwapText>{link.title}</SwapText>
+              </a>
             </li>
-            <li>
-              <Image
-                width="50"
-                height="50"
-                src="https://img.icons8.com/3d-fluency/50/linkedin.png"
-                alt="linkedin"
-              />
-            </li>
-            <li>
-              <Image
-                width="50"
-                height="50"
-                src="https://img.icons8.com/3d-fluency/50/instagram-new.png"
-                alt="instagram-new"
-              />
-            </li>
-          </ul>
-        </div>
-      </div>
-      {navbarOpen ? <MenuOverlay links={navLinks} /> : null}
-    </nav>
+          ))}
+          <li className="hidden sm:block">
+            <a
+              href="/NAMO_DHAKER.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="swap-parent rounded-full border border-line px-4 py-2 text-xs uppercase tracking-[0.15em] text-fg transition-colors duration-300 hover:border-accent hover:text-accent">
+              <SwapText>Resume</SwapText>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
   );
 };
 

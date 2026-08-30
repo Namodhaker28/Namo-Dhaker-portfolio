@@ -1,17 +1,21 @@
 "use client";
-import React, { useState, useRef } from "react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProjectCard from "./ProjectCard";
-import ProjectTag from "./ProjectTag";
-import { motion, useInView } from "framer-motion";
+import SectionLabel from "./SectionLabel";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const projectsData = [
   {
     id: 2,
     title: "Chat App",
     description:
-      "The chat app for those who love to talk, type, and take conversations to the next level ",
+      "A real-time messaging platform with rooms, live presence and instant delivery. Socket.io keeps every conversation in sync across clients, backed by a Node and Express API with MongoDB persistence.",
     image: "/images/projects/chatapp.png",
-    tag: ["All", "Web"],
+    stack: ["React", "Node.js", "Express", "Socket.io", "MongoDB"],
     gitUrlClient: "https://github.com/Namodhaker28/chat-app-frontend/tree/master",
     gitUrlServer: "https://github.com/Namodhaker28/chat-app-backend/tree/master",
     previewUrl: "https://verdant-mandazi-e70ad1.netlify.app/",
@@ -20,9 +24,9 @@ const projectsData = [
     id: 3,
     title: "Sneaker Store",
     description:
-      "Discover your perfect stride with our vast collection of shoes, where style meets comfort in every click.",
+      "A full e-commerce experience for sneakers — product catalogue, filtering, cart and checkout. Built as a separate React storefront and Node/Express API with PostgreSQL handling inventory and orders.",
     image: "/images/projects/ecommerce.png",
-    tag: ["All", "Web"],
+    stack: ["React", "Redux", "Node.js", "Express", "PostgreSQL"],
     gitUrlClient: "https://github.com/Namodhaker28/404shoe-frontend/tree/dev",
     gitUrlServer: "https://github.com/Namodhaker28/404shoe-backend/tree/dev",
     previewUrl: "https://lovely-quokka-068f3c.netlify.app",
@@ -31,9 +35,9 @@ const projectsData = [
     id: 4,
     title: "To-do App",
     description:
-      "Unleash the power of productivity: conquer chaos and claim victory over your tasks with our heroic to-do app.",
+      "A fast, minimal task manager with full CRUD, backed by a real API rather than local storage. The React front end talks to a Node/Express service so tasks persist across sessions and devices.",
     image: "/images/projects/todoapp.PNG",
-    tag: ["All", "Mobile"],
+    stack: ["React", "Node.js", "Express", "PostgreSQL"],
     gitUrlClient: "https://github.com/Namodhaker28/ToDo-List/tree/todoList-with-backend",
     gitUrlServer: "https://github.com/Namodhaker28/todo-backend/tree/master",
     previewUrl: "https://celadon-chimera-001229.netlify.app/",
@@ -42,82 +46,148 @@ const projectsData = [
     id: 5,
     title: "Weather App",
     description:
-      "Navigate the whims of the weather with precision, all in one swipe—your daily forecast, redefined.",
+      "A location-aware forecast app that turns raw weather API data into a clean, glanceable daily view. Search any city and get current conditions and forecasts, redefined in one swipe.",
     image: "/images/projects/weather.jpeg",
-    tag: ["All", "Web"],
+    stack: ["React", "REST API", "CSS"],
     gitUrlClient: "https://github.com/Namodhaker28/weather-app",
     gitUrlServer: "",
     previewUrl: "https://dulcet-maamoul-6aad65.netlify.app/",
   },
   {
     id: 6,
-    title: "MorseEmoji Code genertion",
+    title: "MorseEmoji",
     description:
-      "Transform text into a playful MorseEmoji code, where dots and dashes are replaced with fun emojis, adding a whimsical twist to classic communication.",
+      "A playful text transformer that encodes messages into Morse code rendered with emojis — dots and dashes replaced with expressive characters. A small experiment in making classic encoding fun to share.",
     image: "/images/projects/moseremoji.png",
-    tag: ["All", "Web"],
+    stack: ["JavaScript", "React"],
     gitUrlClient: "https://github.com/Namodhaker28/morsemoji",
     gitUrlServer: "",
     previewUrl: "https://scintillating-scone-138b72.netlify.app/",
   },
 ];
 
+// Pinned section: on desktop the viewport locks while the track scrolls
+// horizontally, driven by vertical scroll (GSAP ScrollTrigger + scrub).
 const ProjectsSection = () => {
-  const [tag, setTag] = useState("All");
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+  const progressRef = useRef(null);
+  const counterRef = useRef(null);
 
-  const handleTagChange = (newTag) => {
-    setTag(newTag);
-  };
+  useGSAP(
+    () => {
+      // Masked reveal for the heading (fires before the pin starts)
+      gsap.from("[data-work-mask]", {
+        yPercent: 110,
+        duration: 1,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+        },
+      });
 
-  const filteredProjects = projectsData.filter((project) => project.tag.includes(tag));
+      const mm = gsap.matchMedia();
 
-  const cardVariants = {
-    initial: { y: 50, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-  };
+      mm.add("(min-width: 768px)", () => {
+        const track = trackRef.current;
+        const distance = () => track.scrollWidth - window.innerWidth;
+
+        gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: () => `+=${distance()}`,
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              if (progressRef.current) {
+                progressRef.current.style.transform = `scaleX(${self.progress})`;
+              }
+              if (counterRef.current) {
+                const current = Math.min(
+                  projectsData.length,
+                  Math.floor(self.progress * projectsData.length) + 1
+                );
+                counterRef.current.textContent = String(current).padStart(2, "0");
+              }
+            },
+          },
+        });
+      });
+
+      // Recompute pin distances once everything (fonts, images) has loaded
+      const refresh = () => ScrollTrigger.refresh();
+      window.addEventListener("load", refresh);
+
+      return () => {
+        window.removeEventListener("load", refresh);
+        mm.revert();
+      };
+    },
+    { scope: sectionRef }
+  );
 
   return (
-    <section id="projects">
-      <h2 className="text-center text-4xl font-bold text-white mt-4 mb-8 md:mb-12">My Projects</h2>
-      {/* <div className="text-white flex flex-row justify-center items-center gap-2 py-6">
-        <ProjectTag
-          onClick={handleTagChange}
-          name="All"
-          isSelected={tag === "All"}
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="Web"
-          isSelected={tag === "Web"}
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="Mobile"
-          isSelected={tag === "Mobile"}
-        />
-      </div> */}
-      <ul ref={ref} className="grid md:grid-cols-3 gap-8 md:gap-12">
-        {projectsData.map((project, index) => (
-          <motion.li
-            key={index}
-            variants={cardVariants}
-            initial="initial"
-            animate={isInView ? "animate" : "initial"}
-            transition={{ duration: 0.3, delay: index * 0.4 }}>
-            <ProjectCard
+    <section
+      id="work"
+      ref={sectionRef}
+      className="relative z-10 overflow-hidden bg-ink">
+      <div className="pointer-events-none absolute -top-40 right-[-10%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(closest-side,rgba(141,123,255,0.1),transparent)]" />
+      <div className="flex flex-col justify-center py-20 md:h-screen md:py-0">
+        <div className="mx-auto mb-10 flex w-full max-w-6xl items-end justify-between px-6 md:mb-14">
+          <div>
+            <SectionLabel>Selected Work</SectionLabel>
+            <div className="mt-4 overflow-hidden">
+              <h2
+                data-work-mask
+                className="font-display text-4xl font-medium tracking-tight sm:text-5xl">
+                Projects
+              </h2>
+            </div>
+          </div>
+          <p className="hidden font-display text-sm text-muted md:block">
+            <span ref={counterRef} className="text-fg">
+              01
+            </span>{" "}
+            / {String(projectsData.length).padStart(2, "0")}
+          </p>
+        </div>
+
+        <div
+          ref={trackRef}
+          className="flex flex-col gap-10 px-6 md:flex-row md:flex-nowrap md:gap-8 md:pl-[max(1.5rem,calc((100vw-72rem)/2))] md:pr-[12vw]">
+          {projectsData.map((project, index) => (
+            <div
               key={project.id}
-              title={project.title}
-              description={project.description}
-              imgUrl={project.image}
-              gitUrlClient={project.gitUrlClient}
-              gitUrlServer={project.gitUrlServer}
-              previewUrl={project.previewUrl}
+              className="w-full shrink-0 md:w-[min(38rem,72vw)]">
+              <ProjectCard
+                index={index + 1}
+                title={project.title}
+                description={project.description}
+                imgUrl={project.image}
+                stack={project.stack}
+                gitUrlClient={project.gitUrlClient}
+                gitUrlServer={project.gitUrlServer}
+                previewUrl={project.previewUrl}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="mx-auto mt-12 hidden w-full max-w-6xl px-6 md:block">
+          <div className="h-px w-full bg-line">
+            <div
+              ref={progressRef}
+              className="h-px w-full origin-left scale-x-0 bg-accent"
             />
-          </motion.li>
-        ))}
-      </ul>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

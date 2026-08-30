@@ -1,50 +1,81 @@
-import React from "react";
-import { CodeBracketIcon, CodeBracketSquareIcon, EyeIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-// import { CodeBracketSquareIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
+import SwapText from "./SwapText";
 
-const ProjectCard = ({ imgUrl, title, description, gitUrlServer, gitUrlClient, previewUrl }) => {
+const ProjectCard = ({
+  index,
+  title,
+  description,
+  imgUrl,
+  stack = [],
+  gitUrlClient,
+  gitUrlServer,
+  previewUrl,
+}) => {
   return (
-    <div>
-      <div
-        className=" bg-whiteh-52 md:h-72 rounded-t-xl relative group"
-        style={{
-          background: `url(${imgUrl}) no-repeat center center`,
-          backgroundSize: "auto 300px",
-          backgroundColor: "#fff",
+    <article className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-line bg-panel transition-colors duration-500 hover:border-accent/40">
+      <div className="relative aspect-[16/10] overflow-hidden">
+        <Image
+          src={imgUrl}
+          alt={title}
+          fill
+          sizes="(min-width: 768px) 40rem, 90vw"
+          className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+        />
+      </div>
 
-        }}>
-        <div className="overlay items-center  justify-center absolute top-0 left-0 w-full h-full bg-[#181818] bg-opacity-0 hidden group-hover:flex  group-hover:bg-opacity-80 transition-all duration-500 ">
-          <Link
-            target="_blank"
-            href={gitUrlClient}
-            className="h-14 w-14 mr-2 border-2 relative rounded-full border-[#ADB7BE] hover:border-white group/link">
-            <span className="text-white font-bold relative top-14">Client</span>
-            <CodeBracketSquareIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  cursor-pointer group-hover/link:text-white" />
-          </Link>
-          {gitUrlServer && (
-            <Link
-              target="_blank"
-              href={gitUrlServer}
-              className="h-14 w-14 mr-2 border-2 relative rounded-full border-[#ADB7BE] hover:border-white group/link">
-              <span className="text-white font-bold relative top-14">Server</span>
-              <CodeBracketIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  cursor-pointer group-hover/link:text-white" />
-            </Link>
-          )}
-          <Link
-            target="_blank"
+      <div className="flex flex-1 flex-col p-6 sm:p-8">
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="font-display text-xl font-medium tracking-tight text-fg sm:text-2xl">
+            {title}
+          </h3>
+          <span className="shrink-0 font-display text-sm text-muted">
+            [ {String(index).padStart(2, "0")} ]
+          </span>
+        </div>
+
+        <p className="mt-3 text-sm leading-relaxed text-muted">{description}</p>
+
+        {stack.length > 0 && (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {stack.map((tech) => (
+              <li
+                key={tech}
+                className="rounded-full border border-line px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-muted">
+                {tech}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-auto flex flex-wrap items-center gap-5 pt-6">
+          <a
             href={previewUrl}
-            className="h-14 w-14 border-2 relative rounded-full border-[#ADB7BE] hover:border-white group/link">
-            <span className="text-white font-bold relative top-14">Preview</span>
-            <EyeIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  cursor-pointer group-hover/link:text-white" />
-          </Link>
+            target="_blank"
+            rel="noopener noreferrer"
+            className="swap-parent inline-flex items-center gap-1 text-xs font-medium uppercase tracking-[0.15em] text-accent transition-opacity duration-300 hover:opacity-80">
+            <SwapText>Live site</SwapText>
+            <ArrowUpRightIcon className="h-3 w-3" />
+          </a>
+          <a
+            href={gitUrlClient}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="swap-parent text-xs uppercase tracking-[0.15em] text-muted transition-colors duration-300 hover:text-fg">
+            <SwapText>Client code</SwapText>
+          </a>
+          {gitUrlServer && (
+            <a
+              href={gitUrlServer}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="swap-parent text-xs uppercase tracking-[0.15em] text-muted transition-colors duration-300 hover:text-fg">
+              <SwapText>Server code</SwapText>
+            </a>
+          )}
         </div>
       </div>
-      <div className="text-white rounded-b-xl mt-3 bg-[#181818]py-6 px-4">
-        <h5 className="text-xl font-semibold mb-2">{title}</h5>
-        <p className="text-[#ADB7BE]">{description} lore</p>
-      </div>
-    </div>
+    </article>
   );
 };
 

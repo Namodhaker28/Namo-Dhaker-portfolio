@@ -2,23 +2,146 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-
-  background: rgb(0,0,0);
-  background: linear-gradient(133deg, rgba(0,0,0,1) 0%, rgba(0,1,46,1) 35%, rgba(0,6,50,1) 61%, rgba(20,0,45,1) 90%);
-  background-size: 500% 500%;
-  animation: gradient 10s ease infinite;
-  height: max-content;
+:root {
+  --ink: #0b0b10;
+  --fg: #f2f2ed;
+  --muted: #9d9da8;
+  --line: rgba(242, 242, 237, 0.1);
+  --accent: #cbff4d;
+  --violet: #8d7bff;
 }
 
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
+html {
+  scroll-behavior: initial;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  background-color: var(--ink);
+  background-image: linear-gradient(
+    180deg,
+    #0b0b10 0%,
+    #0d0d16 40%,
+    #0b0e12 100%
+  );
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Subtle film grain so large dark areas don't feel flat */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.text-gradient {
+  background: linear-gradient(92deg, var(--accent) 20%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Reverse-direction marquee (stats row) */
+.marquee-track-reverse {
+  animation: marquee 32s linear infinite reverse;
+  will-change: transform;
+}
+
+.marquee-track-reverse:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track-reverse {
+    animation: none;
   }
-  50% {
-    background-position: 100% 50%;
+}
+
+/* Text-swap hover (used with the SwapText component).
+   The duplicate label sits absolutely below the visible one, so the mask
+   is only ever one line tall; hovering slides the pair up one line. */
+.swap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.swap-inner {
+  position: relative;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.swap-inner > span:last-child {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+}
+
+.swap-parent:hover .swap-inner,
+.swap-parent:focus-visible .swap-inner {
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swap-inner {
+    transition: none;
   }
-  100% {
-    background-position: 0% 50%;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* Thin, unobtrusive scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(242, 242, 237, 0.2);
+  border-radius: 3px;
+}
+
+/* Continuous marquee for the tech stack strip */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
   }
 }

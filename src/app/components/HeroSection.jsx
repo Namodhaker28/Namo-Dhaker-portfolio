@@ -1,78 +1,93 @@
 "use client";
-import React from "react";
-import Image from "next/image";
-import { TypeAnimation } from "react-type-animation";
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import SectionLabel from "./SectionLabel";
+import SwapText from "./SwapText";
+import { INTRO_REVEAL_AT } from "./IntroLoader";
+
+gsap.registerPlugin(useGSAP);
+
+// Each heading line sits inside an overflow-hidden mask and slides up
+// into view (masked line reveal) instead of a plain fade.
+const MaskedLine = ({ children, className = "" }) => (
+  <span className={`block overflow-hidden ${className}`}>
+    <span data-hero-line className="block">
+      {children}
+    </span>
+  </span>
+);
 
 const HeroSection = () => {
+  const scope = useRef(null);
+
+  useGSAP(
+    () => {
+      // Waits for the intro loader to start revealing the site
+      gsap
+        .timeline({ delay: INTRO_REVEAL_AT, defaults: { ease: "power4.out" } })
+        .from("[data-hero-line]", {
+          yPercent: 110,
+          duration: 1.1,
+          stagger: 0.1,
+        })
+        .from(
+          "[data-hero-fade]",
+          { opacity: 0, y: 20, duration: 0.8, stagger: 0.1, ease: "power3.out" },
+          "-=0.6"
+        );
+    },
+    { scope }
+  );
+
   return (
-    <section className="lg:py-16">
-      <div className="grid grid-cols-1 sm:grid-cols-12">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="col-span-8 place-self-center text-center sm:text-left justify-self-start">
-          <h2 className="text-white mb-4 text-3xl sm:text-4xl lg:text-6xl lg:leading-normal font-extrabold">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-100 to-blue-400">
-              Hello, I&apos;m{" "}
-            </span>
-            <br></br>
-            <TypeAnimation
-              sequence={[
-                "Namo",
-                3000,
-                "Web Developer",
-                1000,
-                "App Developer",
-                1000,
-                // "UI/UX Designer",
-                // 1000,
-              ]}
-              wrapper="span"
-              speed={50}
-              repeat={Infinity}
-            />
-          </h2>
-          <p className="text-[#ADB7BE] text-base sm:text-lg mb-6 lg:text-xl">
-            Building Bridges Between Ideas and Execution
+    <section
+      ref={scope}
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6">
+      <div className="pointer-events-none absolute -top-32 left-[-15%] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(closest-side,rgba(141,123,255,0.16),transparent)]" />
+      <div className="pointer-events-none absolute bottom-[-20%] right-[-10%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(closest-side,rgba(203,255,77,0.09),transparent)]" />
+
+      <div className="relative mx-auto w-full max-w-6xl">
+        <div data-hero-fade>
+          <SectionLabel className="mb-6">Full-stack Developer</SectionLabel>
+        </div>
+
+        <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight sm:text-7xl lg:text-8xl">
+          <MaskedLine>Building bridges</MaskedLine>
+          <MaskedLine className="text-muted">between ideas</MaskedLine>
+          <MaskedLine>
+            &amp; <span className="text-gradient">execution</span>
+            <span className="text-accent">.</span>
+          </MaskedLine>
+        </h1>
+
+        <div className="mt-12 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <p data-hero-fade className="max-w-sm text-sm leading-relaxed text-muted">
+            I&apos;m Namo — a developer who designs, builds and ships
+            interactive web applications end to end.
           </p>
-          <div>
-            <Link
+
+          <div data-hero-fade className="flex items-center gap-4">
+            <a
               href="mailto:namodhaker76@gmail.com"
-              className="px-6 inline-block py-3 w-full sm:w-fit rounded-full mr-4 bg-blue-800 hover:bg-green-800 text-white">
-              Hire Me
-            </Link>
-            <Link
+              className="swap-parent rounded-full bg-accent px-6 py-3 text-sm font-medium text-ink transition-transform duration-300 hover:scale-105">
+              <SwapText>Get in touch</SwapText>
+            </a>
+            <a
               href="/NAMO_DHAKER.pdf"
-              rel="noopener noreferrer"
               target="_blank"
-              className="px-1 inline-block py-1 w-full sm:w-fit rounded-full bg-blue-400 hover:bg-slate-800 text-white mt-3">
-              <span className="block bg-[#121212] hover:bg-slate-800 rounded-full px-5 py-2">
-                Download CV
-              </span>
-            </Link>
+              rel="noopener noreferrer"
+              className="swap-parent rounded-full border border-line px-6 py-3 text-sm text-fg transition-colors duration-300 hover:border-accent hover:text-accent">
+              <SwapText>Download CV</SwapText>
+            </a>
           </div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="col-span-4 place-self-center mt-4 lg:mt-0">
-          <div className="rounded-full  w-[200px] h-[200px] lg:w-[400px] lg:h-[400px] relative">
-            <Image
-              src="/images/namo.png"
-              alt="hero image"
-              priority
-              style={{mixBlendMode: 'luminosity'}}
-              className="
-               absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-              width={300}
-              height={300}
-            />
-          </div>
-        </motion.div>
+        </div>
+      </div>
+
+      <div
+        data-hero-fade
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.3em] text-muted">
+        Scroll
       </div>
     </section>
   );
