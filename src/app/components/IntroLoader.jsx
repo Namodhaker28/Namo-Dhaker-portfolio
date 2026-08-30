@@ -9,7 +9,7 @@ gsap.registerPlugin(useGSAP);
 // Seconds from mount until the overlay starts fading and the site is
 // revealed. HeroSection uses this to delay its own entrance animation.
 // The fade begins mid-zoom so the photo blends into the site.
-export const INTRO_REVEAL_AT = 3.0;
+export const INTRO_REVEAL_AT = 3.25;
 
 const IntroLoader = () => {
   const scope = useRef(null);
@@ -33,58 +33,68 @@ const IntroLoader = () => {
         },
       });
 
-      // The hidden initial states are server-rendered inline (see JSX), so
-      // fromTo simply confirms them at hydration — no flash of visible
-      // content before the animation takes over.
+      // The names hang off either side of the gap element, so growing the
+      // gap's width pushes them apart symmetrically — while the photo
+      // inside it stays hidden until its own reveal step.
+      const gapWidth = () => (window.innerWidth < 640 ? "6rem" : "9rem");
 
-      // The names hang off either side of the frame, so growing the frame's
-      // width from 0 pushes them apart symmetrically.
-      const frameWidth = () => (window.innerWidth < 640 ? "6rem" : "9rem");
-
-      // Phase 1 (0 - 0.95s): the full name rises out of its masks and
-      // stands alone, centered
+      // Phase 1 (0s): the full name rises into view, centered
       tl.fromTo(
         "[data-intro-name]",
         { yPercent: 120 },
-        { yPercent: 0, duration: 0.9, stagger: 0.08, ease: "power4.out" },
+        { yPercent: 0, duration: 0.85, stagger: 0.08, ease: "power4.out" },
         0
       )
-        // Phase 2 (1.25s, after a clear beat): the photo grows between the
-        // names, pushing first and last name left and right to make space
+        // Phase 2 (1.1s): names move left and right, opening an EMPTY gap
+        .fromTo(
+          "[data-intro-gap]",
+          { width: 0 },
+          { width: gapWidth, duration: 0.7, ease: "power4.inOut" },
+          1.1
+        )
+        // Phase 3 (1.95s): the photo wipes up into the gap
         .fromTo(
           "[data-intro-frame]",
-          { width: 0 },
-          { width: frameWidth, duration: 0.9, ease: "power4.inOut" },
-          1.25
+          { clipPath: "inset(100% 0% 0% 0%)" },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration: 0.6,
+            ease: "power4.out",
+          },
+          1.95
         )
-        // Phase 3 (2.45s): hold the composition, then the name exits upward
+        // Phase 4 (2.75s): hold, then the name exits upward
         .to(
           "[data-intro-name]",
-          { yPercent: -120, duration: 0.55, stagger: 0.05, ease: "power3.in" },
-          2.45
+          { yPercent: -120, duration: 0.5, stagger: 0.05, ease: "power3.in" },
+          2.75
         )
-        // Phase 4 (2.7s): photo zooms toward fullscreen with a slow push-in
+        // Phase 5 (2.95s): photo zooms toward fullscreen with a slow push-in
         .to(
-          "[data-intro-frame]",
+          "[data-intro-gap]",
           {
             width: "100vw",
             height: "100vh",
-            borderRadius: 0,
-            duration: 1.1,
+            duration: 1.0,
             ease: "power4.inOut",
           },
-          2.7
+          2.95
+        )
+        .to(
+          "[data-intro-frame]",
+          { borderRadius: 0, duration: 0.6, ease: "power2.inOut" },
+          2.95
         )
         .to(
           "[data-intro-img]",
-          { scale: 1.4, duration: 1.4, ease: "power2.inOut" },
-          2.7
+          { scale: 1.4, duration: 1.3, ease: "power2.inOut" },
+          2.95
         )
-        // 5. Crossfade starts MID-zoom, so the site blends through the
-        // photo before it ever reaches full size
+        // Phase 6: crossfade starts MID-zoom, so the site blends through
+        // the photo before it ever reaches full size
         .to(
           scope.current,
-          { opacity: 0, duration: 1.0, ease: "power2.inOut" },
+          { opacity: 0, duration: 0.9, ease: "power2.inOut" },
           INTRO_REVEAL_AT
         );
 
@@ -100,20 +110,26 @@ const IntroLoader = () => {
       ref={scope}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-ink">
       <div className="relative flex items-center justify-center">
-        {/* Photo stays perfectly viewport-centered; names hang off either side */}
+        {/* The gap opens first (empty), then the photo reveals inside it.
+            All hidden states are inline so nothing flashes before hydration. */}
         <div
-          data-intro-frame
-          className="relative h-32 overflow-hidden rounded-2xl sm:h-44"
+          data-intro-gap
+          className="relative h-32 sm:h-44"
           style={{ width: 0 }}>
-          <Image
-            data-intro-img
-            src="/images/namo-portrait.png"
-            alt="Namo Dhaker"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-top"
-          />
+          <div
+            data-intro-frame
+            className="absolute inset-0 overflow-hidden rounded-2xl"
+            style={{ clipPath: "inset(100% 0% 0% 0%)" }}>
+            <Image
+              data-intro-img
+              src="/images/namo-portrait.png"
+              alt="Namo Dhaker"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-top"
+            />
+          </div>
         </div>
 
         <span className="absolute right-full mr-4 overflow-hidden sm:mr-8">
