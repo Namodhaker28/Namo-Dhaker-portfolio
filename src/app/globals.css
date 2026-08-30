@@ -71,6 +71,34 @@ body {
   }
 }
 
+/* Typewriter caret for the About lead statement */
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+[data-about-type]::after {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 0.85em;
+  margin-left: 4px;
+  vertical-align: -0.08em;
+  background: var(--accent);
+  animation: caret-blink 0.9s step-end infinite;
+}
+
+[data-about-type].type-done::after {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.8s;
+}
+
 /* Intro loader: the name rises in via pure CSS so it appears immediately
    on first paint, before the JS bundle has loaded. GSAP takes over for
    the later phases. */

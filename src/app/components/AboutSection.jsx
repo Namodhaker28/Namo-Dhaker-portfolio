@@ -4,9 +4,13 @@ import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TextPlugin } from "gsap/TextPlugin";
 import SectionLabel from "./SectionLabel";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, TextPlugin);
+
+const LEAD_TEXT =
+  "I'm a full-stack developer with a passion for creating interactive, responsive web applications — from database schema to the last pixel.";
 
 const STATS = [
   { value: "3+", label: "Years of experience" },
@@ -19,15 +23,20 @@ const AboutSection = () => {
 
   useGSAP(
     () => {
-      // Masked reveal for the lead statement
-      gsap.from("[data-about-mask]", {
-        yPercent: 110,
-        duration: 1.1,
-        ease: "power4.out",
+      // Typewriter effect for the lead statement. It's server-rendered
+      // with the full text (SEO), emptied here before it scrolls into
+      // view, then typed out character by character.
+      const typed = scope.current.querySelector("[data-about-type]");
+      gsap.set(typed, { text: "" });
+      gsap.to(typed, {
+        text: { value: LEAD_TEXT },
+        duration: 3.2,
+        ease: "none",
         scrollTrigger: {
           trigger: scope.current,
           start: "top 70%",
         },
+        onComplete: () => typed.classList.add("type-done"),
       });
 
       gsap.from("[data-about-reveal]", {
@@ -67,13 +76,18 @@ const AboutSection = () => {
         </div>
 
         <div>
-          <div className="overflow-hidden">
+          {/* Invisible copy reserves the final height so the layout
+              doesn't shift while the visible copy types itself out */}
+          <div className="relative">
             <p
-              data-about-mask
-              className="font-display text-2xl font-medium leading-snug tracking-tight text-fg sm:text-3xl lg:text-4xl">
-              I&apos;m a full-stack developer with a passion for creating
-              interactive, responsive web applications — from database schema
-              to the last pixel.
+              aria-hidden="true"
+              className="invisible font-display text-2xl font-medium leading-snug tracking-tight sm:text-3xl lg:text-4xl">
+              {LEAD_TEXT}
+            </p>
+            <p
+              data-about-type
+              className="absolute inset-0 font-display text-2xl font-medium leading-snug tracking-tight text-fg sm:text-3xl lg:text-4xl">
+              {LEAD_TEXT}
             </p>
           </div>
           <p data-about-reveal className="mt-6 max-w-xl text-sm leading-relaxed text-muted">
